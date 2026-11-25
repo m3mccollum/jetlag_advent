@@ -29,6 +29,15 @@
     return n.getFullYear() === ADVENT_YEAR && n.getMonth() === 11 && n.getDate() === day;
   };
 
+  // Square flag SVGs from the open-source flag-icons set (pinned version).
+  const FLAG_CODES = {
+    "New Zealand": "nz", "Japan": "jp", "Germany": "de", "United States": "us",
+    "Switzerland": "ch", "Australia": "au", "Italy": "it", "South Korea": "kr",
+    "France": "fr", "United Kingdom": "gb", "Taiwan": "tw",
+  };
+  const flagUrl = (country) => FLAG_CODES[country] &&
+    "https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/flags/1x1/" + FLAG_CODES[country] + ".svg";
+
   const tiles = new Map();
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   const dim = document.createElement("div");
@@ -88,8 +97,10 @@
     b.innerHTML =
       '<div class="inner">' +
         '<div class="face front"><span class="num">' + s.day + '</span><span class="dec">Dec ' + s.day + '</span></div>' +
-        '<div class="face back"><span class="dayno">DAY ' + s.day + '</span><span class="title"></span></div>' +
+        '<div class="face back"><div class="label"><span class="title"></span></div></div>' +
       "</div>";
+    const flag = flagUrl(s.country);
+    if (flag) b.querySelector(".back").style.backgroundImage = "url('" + flag + "')";
     const titleEl = b.querySelector(".title");
     tiles.set(s.day, b);
 
