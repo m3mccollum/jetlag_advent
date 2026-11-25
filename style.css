@@ -11,9 +11,10 @@
   --lav: #f3ecf7;        /* logo letter fill */
 }
 * { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+/* Never let the spotlight's scaled tile or glow widen the page (phones zoom out to fit it). */
+html { -webkit-text-size-adjust: 100%; overflow-x: hidden; overflow-x: clip; }
 body {
-  margin: 0; color: var(--ink); min-height: 100vh; overflow-x: hidden;
+  margin: 0; color: var(--ink); min-height: 100vh; overflow-x: hidden; overflow-x: clip;
   font-family: "Rubik", "Trebuchet MS", system-ui, sans-serif;
   background-color: var(--paper);
   background-image:
@@ -184,7 +185,13 @@ main { max-width: 960px; margin: 0 auto; padding: 28px 16px 56px; }
 @media (max-width: 520px) {
   .facts { grid-template-columns: 1fr; }
   .grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
-  .back .title { font-size: 10px; letter-spacing: -.01em; }
+  /* edge columns grow inward when spotlighted so they stay on screen */
+  .tile:nth-child(3n+1) { transform-origin: left center; }
+  .tile:nth-child(3n)   { transform-origin: right center; }
+  /* small text: drop the stroke (the shadow outline is enough) and give letters room */
+  .back .title { font-size: 10px; letter-spacing: .04em; -webkit-text-stroke: 0; }
+  .back .label { padding: 2px; }
+  .back.face { padding: 4px; }
   .collage img { opacity: .55; }
   .c-cookie { width: 170px; } .c-pizza { width: 150px; } .c-taco { width: 190px; } .c-chips { width: 170px; }
   .c-bolt-g, .c-bolt-p { display: none; }
