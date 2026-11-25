@@ -16,9 +16,18 @@
     try { localStorage.setItem(STORE_KEY, JSON.stringify([...opened])); } catch (e) {}
   };
 
-  const now = new Date();
-  const isUnlocked = (day) => PREVIEW || now >= new Date(ADVENT_YEAR, 11, day);
-  const isToday = (day) => now.getFullYear() === ADVENT_YEAR && now.getMonth() === 11 && now.getDate() === day;
+  // Doors unlock at local midnight on the viewer's device.
+  // ?now=2026-12-04T23:59:50 simulates a clock (it keeps ticking from that moment) for testing.
+  let clockOffset = 0;
+  const fakeNow = params.get("now");
+  if (fakeNow && !isNaN(new Date(fakeNow))) clockOffset = new Date(fakeNow) - Date.now();
+  const now = () => new Date(Date.now() + clockOffset);
+
+  const isUnlocked = (day) => PREVIEW || now() >= new Date(ADVENT_YEAR, 11, day);
+  const isToday = (day) => {
+    const n = now();
+    return n.getFullYear() === ADVENT_YEAR && n.getMonth() === 11 && n.getDate() === day;
+  };
 
   const tiles = new Map();
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -81,8 +90,6 @@
         '<div class="face front"><span class="num">' + s.day + '</span><span class="dec">Dec ' + s.day + '</span></div>' +
         '<div class="face back"><span class="dayno">DAY ' + s.day + '</span><span class="title"></span></div>' +
       "</div>";
-    if (!isUnlocked(s.day)) b.classList.add("locked");
-    if (isToday(s.day)) b.classList.add("today");
     const titleEl = b.querySelector(".title");
     tiles.set(s.day, b);
 
@@ -100,6 +107,24 @@
     });
     grid.appendChild(b);
   });
+
+  // Re-evaluate locks live, so a page left open unlocks the new door right at midnight.
+  function refreshLocks() {
+    tiles.forEach((b, day) => {
+      b.classList.toggle("locked", !isUnlocked(day));
+      b.classList.toggle("today", isToday(day));
+    });
+  }
+  function scheduleMidnight() {
+    const n = now();
+    const next = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1);
+    setTimeout(() => { refreshLocks(); scheduleMidnight(); }, next - n + 50);
+  }
+  refreshLocks();
+  scheduleMidnight();
+  // Timers can drift or pause while a phone sleeps; these catch up when it wakes.
+  setInterval(refreshLocks, 30000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshLocks(); });
 
   /* ---- info card ---- */
   let current = null;
