@@ -14,7 +14,7 @@ window.SNACKS = [
   { day: 9,  snack: "Sport Beans", storage: "Pantry", season: "9", episode: 4, country: "Switzerland", flavor: "Sweet", videos: [{ id: "62NKEFWavKA", t: 2466 }] },
   { day: 10, snack: "Tim Tam", storage: "Pantry", season: "10", episode: 2, country: "Australia", flavor: "Sharable Sweet", videos: [{ id: "abwiCon6IjU", t: 815 }] },
   { day: 11, snack: "Snack di Parmigiano Reggiano", storage: "Refrigerator", season: "11", episode: 1, country: "Italy", flavor: "Savory", videos: [{ id: "hsoiHKaqG2s", t: 1205 }] },
-  { day: 12, snack: "Mochi, Strawberry Flavored", storage: "Freezer", season: "12", episode: 1, country: "Japan", flavor: "Sharable Sweet", videos: [{ id: "PHjkSKQSzv4", t: 2961 }] },
+  { day: 12, snack: "Strawberry Mochi", storage: "Freezer", season: "12", episode: 1, country: "Japan", flavor: "Sharable Sweet", videos: [{ id: "PHjkSKQSzv4", t: 2961 }] },
   { day: 13, snack: "Dango", storage: "Freezer", season: "12", episode: 1, country: "Japan", flavor: "Other", videos: [{ id: "PHjkSKQSzv4", t: 2961 }] },
   { day: 14, snack: "Lotte Coolish Vanilla Ice Cream", storage: "Freezer", season: "12", episode: 7, country: "Japan", flavor: "Sweet", videos: [{ id: "5UAM-ZKBcZs", t: 1231 }] },
   { day: 15, snack: "Trader Joe's Jingle Jangle", storage: "Pantry", season: "13.5", episode: 1, country: "United States", flavor: "Sharable Sweet", videos: [{ id: "Zftv6Kh2zi4", t: 3145 }] },
