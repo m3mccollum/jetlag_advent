@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snack Zone Advent</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <p class="eyebrow">Now departing · 24 days · 24 snacks</p>
+    <h1>The Snack Zone <span>Advent</span></h1>
+    <p class="sub">Open today's door. Snack, stash spot, and the episode it came from.</p>
+  </header>
+
+  <main>
+    <div id="grid" class="grid" aria-label="Advent calendar"></div>
+  </main>
+
+  <footer><button id="reset" class="linklike" hidden>Reset opened doors</button></footer>
+
+  <div id="modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="card-title">
+    <div class="modal-backdrop" data-close></div>
+    <article class="card">
+      <button class="close" data-close aria-label="Close">×</button>
+      <div class="ticket-head">
+        <span class="day-badge" id="card-day"></span>
+        <span class="flavor" id="card-flavor"></span>
+      </div>
+      <h2 id="card-title"></h2>
+      <dl class="facts">
+        <div><dt>Store it in</dt><dd id="card-storage"></dd></div>
+        <div><dt>From</dt><dd id="card-episode"></dd></div>
+        <div><dt>Country</dt><dd id="card-country"></dd></div>
+      </dl>
+      <div id="video-tabs" class="video-tabs"></div>
+      <div class="video" id="video"></div>
+      <a id="video-link" class="yt-link" target="_blank" rel="noopener">Open on YouTube ↗</a>
+    </article>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
