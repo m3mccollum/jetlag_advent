@@ -6,30 +6,67 @@
   const modal = document.getElementById("modal");
   const $ = (id) => document.getElementById(id);
 
+  // Preview mode always starts fresh and never saves, so testing can't spoil the real calendar.
   let opened = new Set();
-  try { opened = new Set(JSON.parse(localStorage.getItem(STORE_KEY) || "[]")); } catch (e) {}
-  const save = () => { try { localStorage.setItem(STORE_KEY, JSON.stringify([...opened])); } catch (e) {} };
+  if (!PREVIEW) {
+    try { opened = new Set(JSON.parse(localStorage.getItem(STORE_KEY) || "[]")); } catch (e) {}
+  }
+  const save = () => {
+    if (PREVIEW) return;
+    try { localStorage.setItem(STORE_KEY, JSON.stringify([...opened])); } catch (e) {}
+  };
 
   const now = new Date();
   const isUnlocked = (day) => PREVIEW || now >= new Date(ADVENT_YEAR, 11, day);
   const isToday = (day) => now.getFullYear() === ADVENT_YEAR && now.getMonth() === 11 && now.getDate() === day;
 
   const tiles = new Map();
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const dim = document.createElement("div");
+  dim.className = "dim";
+  document.body.appendChild(dim);
+  let busy = false;
 
-  function revealTitle(el, text) {
+  // Timeline (ms): dim + lift -> dramatic flip -> letters pop in -> hold in spotlight -> card fades in.
+  const T = { lift: 450, flip: 1200, letter: 35, hold: 1100 };
+
+  function revealTitle(el, text, startDelay) {
     el.textContent = "";
     [...text].forEach((c, i) => {
       const s = document.createElement("span");
       s.className = c === " " ? "sp" : "ch";
       s.textContent = c === " " ? "" : c;
-      s.style.animationDelay = 450 + i * 35 + "ms"; // starts as the flip lands
+      s.style.animationDelay = startDelay + i * T.letter + "ms";
       el.appendChild(s);
     });
   }
 
+  async function reveal(tile, titleEl, s) {
+    busy = true;
+    tile.scrollIntoView({ block: "center", behavior: "smooth" });
+    dim.classList.add("on");
+    tile.classList.add("spot");
+    await wait(T.lift);
+
+    tile.classList.add("flipping", "flipped");
+    revealTitle(titleEl, s.snack, T.flip * 0.75); // letters start as the back face settles
+    await wait(T.flip * 0.75 + s.snack.length * T.letter + T.hold);
+
+    showCard(s);          // card + its backdrop fade in over the dimmed page
+    dim.classList.remove("on");
+    tile.classList.remove("spot", "flipping");
+    busy = false;
+  }
+
   SNACKS.forEach((s) => {
-    const b = document.createElement("button");
+    // A div rather than <button>: Firefox's button internals can flatten 3D transforms.
+    const b = document.createElement("div");
     b.className = "tile";
+    b.setAttribute("role", "button");
+    b.tabIndex = 0;
+    b.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); b.click(); }
+    });
     b.setAttribute("aria-label", "Door " + s.day);
     b.innerHTML =
       '<div class="inner">' +
@@ -48,11 +85,10 @@
         b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
         return;
       }
+      if (busy) return;
       if (b.classList.contains("flipped")) { showCard(s); return; }
-      b.classList.add("flipped");
-      revealTitle(titleEl, s.snack);
       opened.add(s.day); save();
-      setTimeout(() => showCard(s), 900 + Math.min(s.snack.length, 30) * 35 + 500);
+      reveal(b, titleEl, s);
     });
     grid.appendChild(b);
   });
@@ -105,10 +141,4 @@
   }
   modal.addEventListener("click", (e) => { if (e.target.hasAttribute("data-close")) closeCard(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !modal.hidden) closeCard(); });
-
-  if (PREVIEW) {
-    const r = $("reset");
-    r.hidden = false;
-    r.addEventListener("click", () => { opened.clear(); save(); location.reload(); });
-  }
 })();
