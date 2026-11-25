@@ -32,12 +32,20 @@
 
   function revealTitle(el, text, startDelay) {
     el.textContent = "";
-    [...text].forEach((c, i) => {
-      const s = document.createElement("span");
-      s.className = c === " " ? "sp" : "ch";
-      s.textContent = c === " " ? "" : c;
-      s.style.animationDelay = startDelay + i * T.letter + "ms";
-      el.appendChild(s);
+    // Letters are grouped per word so lines only break between words.
+    let i = 0;
+    text.split(" ").forEach((word, w) => {
+      if (w > 0) { el.appendChild(document.createTextNode(" ")); i++; }
+      const wordEl = document.createElement("span");
+      wordEl.className = "word";
+      [...word].forEach((c) => {
+        const s = document.createElement("span");
+        s.className = "ch";
+        s.textContent = c;
+        s.style.animationDelay = startDelay + i++ * T.letter + "ms";
+        wordEl.appendChild(s);
+      });
+      el.appendChild(wordEl);
     });
   }
 
@@ -99,7 +107,6 @@
   function showCard(s) {
     current = s;
     $("card-day").textContent = "Dec " + s.day;
-    $("card-flavor").textContent = s.flavor;
     $("card-title").textContent = s.snack;
     $("card-storage").textContent = s.storage;
     $("card-episode").textContent = "Season " + s.season + ", Episode " + s.episode;
@@ -128,6 +135,8 @@
     frame.title = "Snack Zone segment";
     frame.allow = "accelerometer; encrypted-media; picture-in-picture; fullscreen";
     frame.allowFullscreen = true;
+    // YouTube rejects embeds that don't send a referrer (Error 153), so request one explicitly.
+    frame.referrerPolicy = "strict-origin-when-cross-origin";
     $("video").replaceChildren(frame);
     $("video-link").href = "https://youtu.be/" + v.id + "?t=" + v.t;
   }

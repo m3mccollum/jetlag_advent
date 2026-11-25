@@ -4,13 +4,28 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Snack Zone Advent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Rubik:wght@400;700;800&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="collage" aria-hidden="true">
+    <img class="c-cookie" src="assets/cookie.webp" alt="">
+    <img class="c-pizza" src="assets/pizza.webp" alt="">
+    <img class="c-taco" src="assets/taco.webp" alt="">
+    <img class="c-chips" src="assets/chips.webp" alt="">
+    <img class="c-bolt-g" src="assets/bolt-green.webp" alt="">
+    <img class="c-bolt-p" src="assets/bolt-pink.webp" alt="">
+  </div>
+
   <header class="hero">
-    <p class="eyebrow">Now departing · 24 days · 24 snacks</p>
-    <h1>The Snack Zone <span>Advent</span></h1>
-    <p class="sub">Open today's door. Snack, stash spot, and the episode it came from.</p>
+    <h1 class="logo-stack">
+      <img class="shapes" src="assets/shapes.webp" alt="">
+      <img class="snackzone" src="assets/snack-zone-logo.webp" alt="The Snack Zone">
+      <img class="advent" src="assets/advent-calendar-logo.webp" alt="Advent Calendar">
+    </h1>
+    <p class="sub">Open today's door to find your snack.</p>
   </header>
 
   <main>
@@ -23,11 +38,10 @@
       <button class="close" data-close aria-label="Close">×</button>
       <div class="ticket-head">
         <span class="day-badge" id="card-day"></span>
-        <span class="flavor" id="card-flavor"></span>
       </div>
       <h2 id="card-title"></h2>
       <dl class="facts">
-        <div><dt>Store it in</dt><dd id="card-storage"></dd></div>
+        <div><dt>Stored in</dt><dd id="card-storage"></dd></div>
         <div><dt>From</dt><dd id="card-episode"></dd></div>
         <div><dt>Country</dt><dd id="card-country"></dd></div>
       </dl>
