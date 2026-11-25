@@ -149,6 +149,10 @@
       });
     }
     setVideo(s.videos[0]);
+    // Warn when a later day's snack uses the exact same segment (same video + timestamp).
+    const spoils = SNACKS.some((o) => o.day > s.day &&
+      o.videos.some((ov) => s.videos.some((v) => v.id === ov.id && v.t === ov.t)));
+    $("spoiler").hidden = !spoils;
     modal.hidden = false;
     document.body.style.overflow = "hidden";
     modal.querySelector(".close").focus();
